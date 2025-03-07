@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <link rel="stylesheet" type="text/css" href="/static/styles.css">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>View Waste Pickup Requests</title>
+</head>
+<body>
+    <h1>Waste Pickup Requests</h1>
+
+    <button onclick="fetchPickups()">Load Requests</button>
+    <table border="1">
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>Waste Type</th>
+                <th>Pickup Location</th>
+                <th>Pickup Date & Time</th>
+                <th>Status</th>
+                <th>Username</th>
+            </tr>
+        </thead>
+        <tbody id="pickupTable">
+        </tbody>
+    </table>
+
+    <p id="response"></p>
+
+    <button onclick="window.location.href='/'">Back to Home</button>
+
+    <script>
+        function fetchPickups() {
+            fetch('/api/wastepickups')
+                .then(response => response.json())
+                .then(data => {
+                    const tableBody = document.getElementById("pickupTable");
+                    tableBody.innerHTML = "";  // Clear existing table rows
+                    
+                    data.pickups.forEach(pickup => {
+                        let row = `<tr>
+                            <td>${pickup.id}</td>
+                            <td>${pickup.wasteType}</td>
+                            <td>${pickup.pickupLocation}</td>
+                            <td>${pickup.pickupDateTime}</td>
+                            <td>${pickup.status}</td>
+                            <td>${pickup.username}</td>
+                        </tr>`;
+                        tableBody.innerHTML += row;
+                    });
+                })
+                .catch(error => document.getElementById("response").innerText = "Error: " + error);
+        }
+    </script>
+</body>
+</html>

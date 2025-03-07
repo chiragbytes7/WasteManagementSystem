@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <link rel="stylesheet" type="text/css" href="/static/styles.css">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Update Waste Pickup Request</title>
+</head>
+<body>
+    <h1>Update a Waste Pickup Request</h1>
+
+    <form id="updateForm">
+        <label>Request ID:</label>
+        <input type="number" id="requestId" required><br>
+
+        <label>New Status:</label>
+        <input type="text" id="status"><br>
+
+        <label>New Pickup Date & Time:</label>
+        <input type="datetime-local" id="pickupDateTime"><br>
+
+        <button type="submit">Update Request</button>
+    </form>
+
+    <p id="response"></p>
+
+    <button onclick="window.location.href='/'">Back to Home</button>
+
+    <script>
+        document.getElementById("updateForm").addEventListener("submit", function(event) {
+            event.preventDefault(); // Prevents page reload
+
+            const requestId = document.getElementById("requestId").value;
+            const status = document.getElementById("status").value;
+            const pickupDateTime = document.getElementById("pickupDateTime").value;
+
+            if (!requestId) {
+                document.getElementById("response").innerText = "Error: Request ID is required";
+                return;
+            }
+
+            fetch('/api/wastepickups/' + requestId, {
+                method: 'PUT',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    status: status ? status : undefined,
+                    pickupDateTime: pickupDateTime ? pickupDateTime : undefined
+                })
+            })
+            .then(response => response.text())
+            .then(data => document.getElementById("response").innerText = data)
+            .catch(error => document.getElementById("response").innerText = "Error: " + error);
+        });
+    </script>
+</body>
+</html>

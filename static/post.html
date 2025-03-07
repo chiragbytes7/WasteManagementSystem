@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <link rel="stylesheet" type="text/css" href="/static/styles.css">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Post Waste Pickup Request</title>
+</head>
+<body>
+    <h1>Post a Waste Pickup Request</h1>
+
+    <form id="postForm">
+        <label>Waste Type:</label>
+        <input type="text" id="wasteType" required><br>
+
+        <label>Pickup Location:</label>
+        <input type="text" id="pickupLocation" required><br>
+
+        <label>Pickup Date & Time:</label>
+        <input type="datetime-local" id="pickupDateTime" required><br>
+
+        <label>Username:</label>
+        <input type="text" id="username" required><br>
+
+        <button type="submit">Submit</button>
+    </form>
+
+    <p id="response"></p>
+
+    <button onclick="window.location.href='/'">Back to Home</button>
+
+    <script>
+        document.getElementById("postForm").addEventListener("submit", function(event) {
+            event.preventDefault(); // Prevents page reload
+
+            fetch('/api/wastepickups', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    wasteType: document.getElementById("wasteType").value,
+                    pickupLocation: document.getElementById("pickupLocation").value,
+                    pickupDateTime: document.getElementById("pickupDateTime").value,
+                    username: document.getElementById("username").value
+                })
+            })
+            .then(response => response.json())
+            .then(data => {
+                document.getElementById("response").innerText = "Pickup Request Created! ID: " + data.id;
+            })
+            .catch(error => document.getElementById("response").innerText = "Error: " + error);
+        });
+    </script>
+</body>
+</html>
